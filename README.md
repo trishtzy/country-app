@@ -1,6 +1,6 @@
-# ReScript Project Template
+# Country App
 
-The only official ReScript starter template.
+Introduction here
 
 ## Installation
 
@@ -8,14 +8,9 @@ The only official ReScript starter template.
 npm install
 ```
 
-## Build
+## Build and Run
 
 - Build: `npm run build`
 - Clean: `npm run clean`
 - Build & watch: `npm run start`
-
-## Run
-
-```sh
-node src/Demo.bs.js
-```
+- Run Server: `npm run serve`
