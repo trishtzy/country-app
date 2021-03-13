@@ -1,10 +1,14 @@
 {
-  "name": "rescript-project-template",
+  "name": "country-app",
   "version": "0.0.1",
+  "private": true,
   "scripts": {
     "build": "bsb -make-world",
     "clean": "bsb -clean-world",
-    "start": "bsb -make-world -w"
+    "start": "bsb -make-world -w",
+    "watch": "webpack --watch",
+    "webpack:production": "NODE_ENV=production webpack",
+    "serve": "webpack serve"
   },
   "keywords": [
     "rescript"
@@ -12,6 +16,15 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "bs-platform": "*"
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0"
+  },
+  "dependencies": {
+    "@rescript/react": "^0.10.1",
+    "html-webpack-plugin": "^5.3.1",
+    "bs-platform": "^8.4.2",
+    "webpack-cli": "^4.5.0",
+    "webpack-dev-server": "^3.11.2",
+    "webpack": "^5.25.0"
   }
 }
