@@ -2,9 +2,12 @@
 'use strict';
 
 var React = require("react");
+var CountrySelect = require("./CountrySelect.bs.js");
 
 function App(Props) {
-  return React.createElement("div", undefined, "Hello World");
+  return React.createElement("div", undefined, React.createElement(CountrySelect.make, {
+                  query: "hey"
+                }));
 }
 
 var make = App;

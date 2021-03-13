@@ -1,4 +1,6 @@
 @react.component
 let make = () => {
-  <div> {React.string("Hello World")} </div>
+  <div>
+    <CountrySelect query="hey"/>
+ </div>
 }
