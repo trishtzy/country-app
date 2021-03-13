@@ -22,6 +22,7 @@
   "dependencies": {
     "@rescript/react": "^0.10.1",
     "bootstrap": "^4.6.0",
+    "bootstrap-icons": "^1.4.0",
     "bs-platform": "^8.4.2",
     "html-webpack-plugin": "^5.3.1",
     "react-bootstrap": "^1.5.2",
