@@ -5,9 +5,7 @@ var React = require("react");
 var CountrySelect = require("./CountrySelect.bs.js");
 
 function App(Props) {
-  return React.createElement("div", undefined, React.createElement(CountrySelect.make, {
-                  query: "hey"
-                }));
+  return React.createElement("div", undefined, React.createElement(CountrySelect.make, {}));
 }
 
 var make = App;
