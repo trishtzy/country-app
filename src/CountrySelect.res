@@ -64,7 +64,7 @@ let make = () => {
   <div className="container centered">
     <form>
       <div className="row">
-        <h5> { React.string("Country App") } </h5>
+        <h5> { React.string("Country Search") } </h5>
 
         <div className="input-icons">
           <i className="bi-search icon"></i>

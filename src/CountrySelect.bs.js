@@ -58,7 +58,7 @@ function CountrySelect(Props) {
               className: "container centered"
             }, React.createElement("form", undefined, React.createElement("div", {
                       className: "row"
-                    }, React.createElement("h5", undefined, "Country App"), React.createElement("div", {
+                    }, React.createElement("h5", undefined, "Country Search"), React.createElement("div", {
                           className: "input-icons"
                         }, React.createElement("i", {
                               className: "bi-search icon"
