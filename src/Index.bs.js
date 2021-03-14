@@ -7,6 +7,7 @@ var ReactDom = require("react-dom");
 
 import "../style/normalize.css"
 import "../style/skeleton.css"
+import "../style/countryselect.css"
 ;
 
 var root = document.querySelector("#root");
