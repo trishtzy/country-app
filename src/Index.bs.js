@@ -5,10 +5,14 @@ var App = require("./App.bs.js");
 var React = require("react");
 var ReactDom = require("react-dom");
 
+import "../style/normalize.css"
+import "../style/skeleton.css"
+;
+
 var root = document.querySelector("#root");
 
 if (!(root == null)) {
   ReactDom.render(React.createElement(App.make, {}), root);
 }
 
-/* root Not a pure module */
+/*  Not a pure module */
