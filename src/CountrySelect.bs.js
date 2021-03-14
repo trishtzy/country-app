@@ -2,18 +2,15 @@
 'use strict';
 
 var React = require("react");
-var FormControl = require("react-bootstrap/FormControl").default;
-
-var FormControl$1 = {};
 
 function CountrySelect(Props) {
-  return React.createElement("div", undefined, React.createElement(FormControl, {
+  var query = Props.query;
+  return React.createElement("form", undefined, React.createElement("h2", undefined, "Country App"), React.createElement("input", {
                   placeholder: "Search..."
-                }));
+                }), query);
 }
 
 var make = CountrySelect;
 
-exports.FormControl = FormControl$1;
 exports.make = make;
 /* react Not a pure module */
