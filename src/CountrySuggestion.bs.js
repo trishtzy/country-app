@@ -8,9 +8,9 @@ function CountrySuggestion(Props) {
   var results = Props.results;
   var options = Belt_Array.map(results, (function (country) {
           return React.createElement("div", {
-                      id: "country-" + country.id
+                      key: "country-" + country.id
                     }, country.label, React.createElement("input", {
-                          id: "country-input-" + country.id,
+                          key: "country-input-" + country.id,
                           type: "hidden",
                           value: country.value
                         }));
