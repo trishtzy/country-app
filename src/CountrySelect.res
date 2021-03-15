@@ -14,11 +14,13 @@ let esReqBody = (q) => = {
     }
   }
 }
-// bindings can be isolated/upstreamed. I'm inlining it just for the example
 type request
 type response
 type country = {id: int, label: string, value: string}
 type countries = array<country>
+type esHits = {_index: string, _type: string, _id: string, _score: float, _source: country}
+type esReponse = { hits: string }
+type esInnerResponse = { hits: array<esHits> }
 @bs.new external makeXMLHttpRequest: unit => request = "XMLHttpRequest"
 @bs.send external addEventListener: (request, string, unit => unit) => unit = "addEventListener"
 @bs.get external response: request => response = "response"
@@ -28,15 +30,10 @@ type countries = array<country>
 @bs.send external setRequestHeader: (request, string, string) => unit = "setRequestHeader"
 // =========
 @bs.scope("JSON") @bs.val
-external parseResponse: response => countries = "parse"
+external parseResponse: response => esReponse = "parse"
+@bs.scope("JSON") @bs.val
+external parseInnerResponse: string => esInnerResponse = "parse"
 
-// type esResponseBody = {
-//   took: int,
-//   timed_out: boolean,
-//   hits: {
-//     hits: array<string>
-//   }
-// }
 @react.component
 let make = () => {
   let (query, setQuery) = React.useState(_ => "");
@@ -51,28 +48,27 @@ let make = () => {
 
   let esReq = makeXMLHttpRequest();
   esReq->addEventListener("load", () => {
-    let response = esReq->response
-    Js.log(response)
+    let response = esReq->response->parseResponse
+    Js.log(response.hits)
   })
   esReq->addEventListener("error", () => {
     Js.log("Error logging here esreq")
   })
-  esReq->open_("POST", "http://localhost:9200/test/_search");
+  esReq->open_("POST", "http://localhost:9200/country/_search");
   esReq->setRequestHeader("Content-Type", "application/json;charset=UTF-8");
   esReq->send(Js.Json.stringifyAny(esReqBody(query)));
 
   <div className="container centered">
     <form>
       <div className="row">
-        <h5> { React.string("Country Search") } </h5>
-
+        <h5> {React.string("Country Search: ")} {React.string(query)} </h5>
         <div className="input-icons autocomplete">
           <i className="bi-search icon"></i>
           <input className="input-field" type_="text" placeholder="Search..." onChange value=query/>
           <CountrySuggestion results=countryList/>
         </div>
-        <p> {React.string(query)} </p>
       </div>
     </form>
+
   </div>
 }

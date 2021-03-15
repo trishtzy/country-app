@@ -43,22 +43,22 @@ function CountrySelect(Props) {
   console.log(esReqBody(query));
   var esReq = new XMLHttpRequest();
   esReq.addEventListener("load", (function (param) {
-          var response = esReq.response;
-          console.log(response);
+          var response = JSON.parse(esReq.response);
+          console.log(response.hits);
           
         }));
   esReq.addEventListener("error", (function (param) {
           console.log("Error logging here esreq");
           
         }));
-  esReq.open("POST", "http://localhost:9200/test/_search");
+  esReq.open("POST", "http://localhost:9200/country/_search");
   esReq.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
   esReq.send(JSON.stringify(esReqBody(query)));
   return React.createElement("div", {
               className: "container centered"
             }, React.createElement("form", undefined, React.createElement("div", {
                       className: "row"
-                    }, React.createElement("h5", undefined, "Country Search"), React.createElement("div", {
+                    }, React.createElement("h5", undefined, "Country Search: ", query), React.createElement("div", {
                           className: "input-icons autocomplete"
                         }, React.createElement("i", {
                               className: "bi-search icon"
@@ -70,7 +70,7 @@ function CountrySelect(Props) {
                               onChange: onChange
                             }), React.createElement(CountrySuggestion.make, {
                               results: match$1[0]
-                            })), React.createElement("p", undefined, query))));
+                            })))));
 }
 
 var make = CountrySelect;
