@@ -3,6 +3,7 @@
 
 var Curry = require("bs-platform/lib/js/curry.js");
 var React = require("react");
+var Belt_Array = require("bs-platform/lib/js/belt_Array.js");
 var CountrySuggestion = require("./CountrySuggestion.bs.js");
 
 function esReqBody(q) {
@@ -33,6 +34,8 @@ function CountrySelect(Props) {
   var match$1 = React.useState(function () {
         return [];
       });
+  var setCountryList = match$1[1];
+  var countryList = match$1[0];
   var onChange = function (evt) {
     evt.preventDefault();
     var value = evt.target.value;
@@ -44,7 +47,17 @@ function CountrySelect(Props) {
   var esReq = new XMLHttpRequest();
   esReq.addEventListener("load", (function (param) {
           var response = JSON.parse(esReq.response);
-          console.log(response.hits);
+          if (response.hits.hits.length !== 0) {
+            Belt_Array.forEach(response.hits.hits, (function (x) {
+                    return Curry._1(setCountryList, (function (_prev) {
+                                  return Belt_Array.concat(countryList, [{
+                                                label: x._source.label,
+                                                value: x._source.value
+                                              }]);
+                                }));
+                  }));
+          }
+          console.log(response.hits.hits);
           
         }));
   esReq.addEventListener("error", (function (param) {
@@ -64,12 +77,13 @@ function CountrySelect(Props) {
                               className: "bi-search icon"
                             }), React.createElement("input", {
                               className: "input-field",
+                              id: "myInput",
                               placeholder: "Search...",
                               type: "text",
                               value: query,
                               onChange: onChange
                             }), React.createElement(CountrySuggestion.make, {
-                              results: match$1[0]
+                              results: countryList
                             })))));
 }
 

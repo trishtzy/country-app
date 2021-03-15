@@ -19,8 +19,8 @@ type response
 type country = {id: int, label: string, value: string}
 type countries = array<country>
 type esHits = {_index: string, _type: string, _id: string, _score: float, _source: country}
-type esReponse = { hits: string }
 type esInnerResponse = { hits: array<esHits> }
+type esResponse = { hits: esInnerResponse }
 @bs.new external makeXMLHttpRequest: unit => request = "XMLHttpRequest"
 @bs.send external addEventListener: (request, string, unit => unit) => unit = "addEventListener"
 @bs.get external response: request => response = "response"
@@ -30,9 +30,7 @@ type esInnerResponse = { hits: array<esHits> }
 @bs.send external setRequestHeader: (request, string, string) => unit = "setRequestHeader"
 // =========
 @bs.scope("JSON") @bs.val
-external parseResponse: response => esReponse = "parse"
-@bs.scope("JSON") @bs.val
-external parseInnerResponse: string => esInnerResponse = "parse"
+external parseResponse: response => esResponse = "parse"
 
 @react.component
 let make = () => {
@@ -49,7 +47,12 @@ let make = () => {
   let esReq = makeXMLHttpRequest();
   esReq->addEventListener("load", () => {
     let response = esReq->response->parseResponse
-    Js.log(response.hits)
+    if Belt_Array.length(response.hits.hits) > 0 {
+      Belt_Array.forEach(response.hits.hits,
+        x => setCountryList(_prev => Belt.Array.concat(countryList, [{"label": x._source.label, "value": x._source.value}]))
+      )
+    }
+    Js.log(response.hits.hits)
   })
   esReq->addEventListener("error", () => {
     Js.log("Error logging here esreq")
@@ -64,11 +67,10 @@ let make = () => {
         <h5> {React.string("Country Search: ")} {React.string(query)} </h5>
         <div className="input-icons autocomplete">
           <i className="bi-search icon"></i>
-          <input className="input-field" type_="text" placeholder="Search..." onChange value=query/>
+          <input id="myInput" className="input-field" type_="text" placeholder="Search..." onChange value=query/>
           <CountrySuggestion results=countryList/>
         </div>
       </div>
     </form>
-
   </div>
 }
