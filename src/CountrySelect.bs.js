@@ -59,7 +59,7 @@ function CountrySelect(Props) {
             }, React.createElement("form", undefined, React.createElement("div", {
                       className: "row"
                     }, React.createElement("h5", undefined, "Country Search"), React.createElement("div", {
-                          className: "input-icons"
+                          className: "input-icons autocomplete"
                         }, React.createElement("i", {
                               className: "bi-search icon"
                             }), React.createElement("input", {
@@ -68,11 +68,9 @@ function CountrySelect(Props) {
                               type: "text",
                               value: query,
                               onChange: onChange
-                            })), React.createElement("p", undefined, query)), React.createElement("div", {
-                      className: "row"
-                    }, React.createElement(CountrySuggestion.make, {
-                          results: match$1[0]
-                        }))));
+                            }), React.createElement(CountrySuggestion.make, {
+                              results: match$1[0]
+                            })), React.createElement("p", undefined, query))));
 }
 
 var make = CountrySelect;

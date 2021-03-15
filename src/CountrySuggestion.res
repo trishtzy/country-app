@@ -3,13 +3,22 @@ type country = {id: int, label: string, value: string}
 @react.component
 let make = (~results) => {
   let options = Belt.Array.map(results, country => {
-    <li key={country.value}>
+    <div>
       {React.string(country.label)}
-    </li>
+      <input type_="hidden" value={country.value}/>
+    </div>
   })
-  <div className="container">
-    <ul>
-      {React.array(options)}
-    </ul>
+  <div id="autocomplete-list" className="row autocomplete-items">
+    {React.array(options)}
+
+    <div>
+      {React.string("Canada")}
+    </div>
+    <div>
+      {React.string("Singapore")}
+    </div>
+    <div>
+      {React.string("Thailand")}
+    </div>
   </div>
 }

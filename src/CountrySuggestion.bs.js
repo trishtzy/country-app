@@ -7,13 +7,15 @@ var Belt_Array = require("bs-platform/lib/js/belt_Array.js");
 function CountrySuggestion(Props) {
   var results = Props.results;
   var options = Belt_Array.map(results, (function (country) {
-          return React.createElement("li", {
-                      key: country.value
-                    }, country.label);
+          return React.createElement("div", undefined, country.label, React.createElement("input", {
+                          type: "hidden",
+                          value: country.value
+                        }));
         }));
   return React.createElement("div", {
-              className: "container"
-            }, React.createElement("ul", undefined, options));
+              className: "row autocomplete-items",
+              id: "autocomplete-list"
+            }, options, React.createElement("div", undefined, "Canada"), React.createElement("div", undefined, "Singapore"), React.createElement("div", undefined, "Thailand"));
 }
 
 var make = CountrySuggestion;

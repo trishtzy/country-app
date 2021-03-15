@@ -66,15 +66,12 @@ let make = () => {
       <div className="row">
         <h5> { React.string("Country Search") } </h5>
 
-        <div className="input-icons">
+        <div className="input-icons autocomplete">
           <i className="bi-search icon"></i>
           <input className="input-field" type_="text" placeholder="Search..." onChange value=query/>
+          <CountrySuggestion results=countryList/>
         </div>
-
         <p> {React.string(query)} </p>
-      </div>
-      <div className="row">
-        <CountrySuggestion results=countryList/>
       </div>
     </form>
   </div>
