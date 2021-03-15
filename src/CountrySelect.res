@@ -32,6 +32,10 @@ type esResponse = { hits: esInnerResponse }
 @bs.scope("JSON") @bs.val
 external parseResponse: response => esResponse = "parse"
 
+type document // abstract type for a document object
+@bs.send external getElementById: (document, string) => Dom.element = "getElementById"
+@bs.val external doc: document = "document"
+
 @react.component
 let make = () => {
   let (query, setQuery) = React.useState(_ => "");
