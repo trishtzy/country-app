@@ -2,7 +2,7 @@
 
 An autocomplete search for countries
 
-![Screenshot 2021-03-15 at 11 16 48 AM](https://user-images.githubusercontent.com/5356506/111099217-fef8ef80-857f-11eb-9dca-5fbaf4cc2b48.png)
+![Screenshot 2021-03-15 at 11 18 37 AM](https://user-images.githubusercontent.com/5356506/111099311-35cf0580-8580-11eb-9008-fbd6de22897d.png)
 
 ## Installation
 
