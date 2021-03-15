@@ -35,38 +35,39 @@ function CountrySelect(Props) {
         return [];
       });
   var setCountryList = match$1[1];
-  var countryList = match$1[0];
   var onChange = function (evt) {
     evt.preventDefault();
     var value = evt.target.value;
-    return Curry._1(setQuery, (function (_prev) {
-                  return value;
-                }));
-  };
-  console.log(esReqBody(query));
-  var esReq = new XMLHttpRequest();
-  esReq.addEventListener("load", (function (param) {
-          var response = JSON.parse(esReq.response);
-          if (response.hits.hits.length !== 0) {
-            Belt_Array.forEach(response.hits.hits, (function (x) {
-                    return Curry._1(setCountryList, (function (_prev) {
-                                  return Belt_Array.concat(countryList, [{
-                                                label: x._source.label,
-                                                value: x._source.value
-                                              }]);
-                                }));
+    Curry._1(setQuery, (function (_prev) {
+            return value;
+          }));
+    var esReq = new XMLHttpRequest();
+    esReq.addEventListener("load", (function (param) {
+            var response = JSON.parse(esReq.response);
+            console.log(response.hits.hits.length);
+            if (response.hits.hits.length === 0) {
+              return ;
+            }
+            var clist = Belt_Array.map(response.hits.hits, (function (x) {
+                    return {
+                            id: String(x._source.ID),
+                            label: x._source.label,
+                            value: x._source.value
+                          };
                   }));
-          }
-          console.log(response.hits.hits);
-          
-        }));
-  esReq.addEventListener("error", (function (param) {
-          console.log("Error logging here esreq");
-          
-        }));
-  esReq.open("POST", "http://localhost:9200/country/_search");
-  esReq.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-  esReq.send(JSON.stringify(esReqBody(query)));
+            return Curry._1(setCountryList, (function (_prev) {
+                          return clist;
+                        }));
+          }));
+    esReq.addEventListener("error", (function (param) {
+            console.log("Error logging here esreq");
+            
+          }));
+    esReq.open("POST", "http://localhost:9200/country/_search");
+    esReq.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    esReq.send(JSON.stringify(esReqBody(query)));
+    
+  };
   return React.createElement("div", {
               className: "container centered"
             }, React.createElement("form", undefined, React.createElement("div", {
@@ -83,7 +84,7 @@ function CountrySelect(Props) {
                               value: query,
                               onChange: onChange
                             }), React.createElement(CountrySuggestion.make, {
-                              results: countryList
+                              results: match$1[0]
                             })))));
 }
 

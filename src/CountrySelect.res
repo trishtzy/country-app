@@ -16,7 +16,7 @@ let esReqBody = (q) => = {
 }
 type request
 type response
-type country = {id: int, label: string, value: string}
+type country = {"ID": int, "label": string, "value": string}
 type countries = array<country>
 type esHits = {_index: string, _type: string, _id: string, _score: float, _source: country}
 type esInnerResponse = { hits: array<esHits> }
@@ -41,26 +41,26 @@ let make = () => {
     ReactEvent.Form.preventDefault(evt)
     let value = ReactEvent.Form.target(evt)["value"]
     setQuery(_prev => value);
+    let esReq = makeXMLHttpRequest();
+    esReq->addEventListener("load", () => {
+      let response = esReq->response->parseResponse
+      Js.log(Belt_Array.length(response.hits.hits))
+      if Belt_Array.length(response.hits.hits) > 0 {
+        let clist = Belt.Array.map(response.hits.hits, x => {
+          {"id": Belt.Int.toString(x._source["ID"]), "label": x._source["label"], "value": x._source["value"]}
+        })
+        setCountryList(_prev => clist)
+      }
+      // Js.log(response.hits.hits)
+    })
+    esReq->addEventListener("error", () => {
+      Js.log("Error logging here esreq")
+    })
+    esReq->open_("POST", "http://localhost:9200/country/_search");
+    esReq->setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    esReq->send(Js.Json.stringifyAny(esReqBody(query)));
   }
-  Js.log(esReqBody(query))
-
-  let esReq = makeXMLHttpRequest();
-  esReq->addEventListener("load", () => {
-    let response = esReq->response->parseResponse
-    if Belt_Array.length(response.hits.hits) > 0 {
-      Belt_Array.forEach(response.hits.hits,
-        x => setCountryList(_prev => Belt.Array.concat(countryList, [{"label": x._source.label, "value": x._source.value}]))
-      )
-    }
-    Js.log(response.hits.hits)
-  })
-  esReq->addEventListener("error", () => {
-    Js.log("Error logging here esreq")
-  })
-  esReq->open_("POST", "http://localhost:9200/country/_search");
-  esReq->setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-  esReq->send(Js.Json.stringifyAny(esReqBody(query)));
-
+  // Js.log(esReqBody(query))
   <div className="container centered">
     <form>
       <div className="row">
