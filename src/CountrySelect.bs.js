@@ -85,6 +85,19 @@ function CountrySelect(Props) {
                               placeholder: "Search...",
                               type: "text",
                               value: query,
+                              onKeyDown: (function ($$event) {
+                                  var key = $$event.key;
+                                  switch (key) {
+                                    case "ArrowDown" :
+                                        console.log("2");
+                                        return ;
+                                    case "ArrowUp" :
+                                        console.log("1");
+                                        return ;
+                                    default:
+                                      return ;
+                                  }
+                                }),
                               onChange: onChange
                             }), React.createElement(CountrySuggestion.make, {
                               results: match$1[0]

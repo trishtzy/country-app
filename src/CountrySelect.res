@@ -60,6 +60,14 @@ let make = () => {
     esReq->send(Js.Json.stringifyAny(esReqBody(query)));
   }
   // Js.log(esReqBody(query))
+  let keyDown = key => {
+    switch (key) {
+    | "ArrowUp" => Js.log("1")
+    | "ArrowDown" => Js.log("2")
+    | _ => ()
+    }
+  }
+
   <div className="container centered">
     <form>
       <div className="row">
@@ -70,7 +78,14 @@ let make = () => {
       <div className="row">
         <div className="input-icons autocomplete one-third column">
           <i className="bi-search icon"></i>
-          <input id="myInput" className="input-field" type_="text" placeholder="Search..." onChange value=query/>
+          <input
+            id="myInput"
+            className="input-field"
+            type_="text"
+            placeholder="Search..."
+            onChange
+            value=query
+            onKeyDown={event => keyDown(ReactEvent.Keyboard.key(event))}/>
           <CountrySuggestion results=countryList/>
         </div>
       </div>
