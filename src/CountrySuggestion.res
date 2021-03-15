@@ -3,9 +3,9 @@
 @react.component
 let make = (~results) => {
   let options = Belt.Array.map(results, country => {
-    <div>
+    <div id=`country-${country["id"]}`>
       {React.string(country["label"])}
-      <input type_="hidden" value={country["value"]}/>
+      <input id=`country-input-${country["id"]}` type_="hidden" value={country["value"]}/>
     </div>
   })
   <div id="autocomplete-list" className="row autocomplete-items">

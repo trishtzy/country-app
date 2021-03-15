@@ -7,7 +7,10 @@ var Belt_Array = require("bs-platform/lib/js/belt_Array.js");
 function CountrySuggestion(Props) {
   var results = Props.results;
   var options = Belt_Array.map(results, (function (country) {
-          return React.createElement("div", undefined, country.label, React.createElement("input", {
+          return React.createElement("div", {
+                      id: "country-" + country.id
+                    }, country.label, React.createElement("input", {
+                          id: "country-input-" + country.id,
                           type: "hidden",
                           value: country.value
                         }));
