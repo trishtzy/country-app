@@ -44,7 +44,6 @@ function CountrySelect(Props) {
     var esReq = new XMLHttpRequest();
     esReq.addEventListener("load", (function (param) {
             var response = JSON.parse(esReq.response);
-            console.log(response.hits.hits.length);
             if (response.hits.hits.length === 0) {
               return ;
             }

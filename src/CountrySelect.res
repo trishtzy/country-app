@@ -44,7 +44,6 @@ let make = () => {
     let esReq = makeXMLHttpRequest();
     esReq->addEventListener("load", () => {
       let response = esReq->response->parseResponse
-      Js.log(Belt_Array.length(response.hits.hits))
       if Belt_Array.length(response.hits.hits) > 0 {
         let clist = Belt.Array.map(response.hits.hits, x => {
           {"id": Belt.Int.toString(x._source["ID"]), "label": x._source["label"], "value": x._source["value"]}
