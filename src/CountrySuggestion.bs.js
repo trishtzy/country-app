@@ -15,7 +15,7 @@ function CountrySuggestion(Props) {
   return React.createElement("div", {
               className: "row autocomplete-items",
               id: "autocomplete-list"
-            }, options, React.createElement("div", undefined, "Canada"), React.createElement("div", undefined, "Singapore"), React.createElement("div", undefined, "Thailand"));
+            }, options);
 }
 
 var make = CountrySuggestion;

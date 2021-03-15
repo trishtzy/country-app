@@ -10,15 +10,5 @@ let make = (~results) => {
   })
   <div id="autocomplete-list" className="row autocomplete-items">
     {React.array(options)}
-
-    <div>
-      {React.string("Canada")}
-    </div>
-    <div>
-      {React.string("Singapore")}
-    </div>
-    <div>
-      {React.string("Thailand")}
-    </div>
   </div>
 }
