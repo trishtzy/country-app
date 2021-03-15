@@ -63,8 +63,12 @@ let make = () => {
   <div className="container centered">
     <form>
       <div className="row">
-        <h5> {React.string("Country Search: ")} {React.string(query)} </h5>
-        <div className="input-icons autocomplete">
+        <div className="one-third column title-centered">
+          <h5> {React.string("Country Search ")} </h5>
+        </div>
+      </div>
+      <div className="row">
+        <div className="input-icons autocomplete one-third column">
           <i className="bi-search icon"></i>
           <input id="myInput" className="input-field" type_="text" placeholder="Search..." onChange value=query/>
           <CountrySuggestion results=countryList/>

@@ -71,8 +71,12 @@ function CountrySelect(Props) {
               className: "container centered"
             }, React.createElement("form", undefined, React.createElement("div", {
                       className: "row"
-                    }, React.createElement("h5", undefined, "Country Search: ", query), React.createElement("div", {
-                          className: "input-icons autocomplete"
+                    }, React.createElement("div", {
+                          className: "one-third column title-centered"
+                        }, React.createElement("h5", undefined, "Country Search "))), React.createElement("div", {
+                      className: "row"
+                    }, React.createElement("div", {
+                          className: "input-icons autocomplete one-third column"
                         }, React.createElement("i", {
                               className: "bi-search icon"
                             }), React.createElement("input", {

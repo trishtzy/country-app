@@ -12,9 +12,13 @@
   text-align: center;
 }
 
+.title-centered {
+  text-align: center;
+}
+
 .centered{
   position: fixed;
-  top: 50%;
+  top: 25%;
   left: 50%;
   margin-top: -50px;
   margin-left: -100px;
