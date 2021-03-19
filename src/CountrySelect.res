@@ -26,11 +26,14 @@ type esResponse = { hits: esInnerResponse }
 @bs.get external response: request => response = "response"
 @bs.send external open_: (request, string, string) => unit = "open"
 @bs.send external send: (request, option<string>) => unit = "send"
+@bs.send external sendReq: request => unit = "send"
 @bs.send external abort: request => unit = "abort"
 @bs.send external setRequestHeader: (request, string, string) => unit = "setRequestHeader"
 // =========
 @bs.scope("JSON") @bs.val
 external parseResponse: response => esResponse = "parse"
+@bs.scope("JSON") @bs.val
+external parseCountryResponse: response => countries = "parse"
 
 type document // abstract type for a document object
 @bs.send external getElementById: (document, string) => Dom.element = "getElementById"
@@ -40,6 +43,7 @@ type document // abstract type for a document object
 let make = () => {
   let (query, setQuery) = React.useState(_ => "");
   let (countryList, setCountryList) = React.useState(_ => []);
+  let (allCountries, setAllCountries) = React.useState(_ => []);
 
   let onChange = evt => {
     ReactEvent.Form.preventDefault(evt)
@@ -72,11 +76,31 @@ let make = () => {
     }
   }
 
+  let countryReq = makeXMLHttpRequest();
+  countryReq->addEventListener("load", () => {
+    let response = countryReq->response->parseCountryResponse
+    let allCountries = Belt.Array.map(response, x => {
+          {"id": Belt.Int.toString(x["ID"]), "label": x["label"], "value": x["value"]}
+        })
+    setAllCountries(_prev => allCountries)
+  })
+  countryReq->addEventListener("error", () => {
+    Js.log("Error logging here countryReq")
+  })
+  countryReq->open_("GET", "http://localhost:8080/countries")
+  countryReq->sendReq
+
+  let allCountriesOptions = Belt.Array.map(allCountries, country => {
+      <option key={country["id"]} value={country["value"]}>{React.string(country["label"])}</option>
+    })
   <div className="container centered">
     <form>
       <div className="row">
         <div className="one-third column title-centered">
-          <h5> {React.string("Country Search ")} </h5>
+          <select id="exampleRecipientInput">
+            <option value="Option 1">{React.string("United States")}</option>
+            {React.array(allCountriesOptions)}
+          </select>
         </div>
       </div>
       <div className="row">
@@ -86,7 +110,7 @@ let make = () => {
             id="myInput"
             className="input-field"
             type_="text"
-            placeholder="Search..."
+            placeholder="Search"
             onChange
             value=query
             onKeyDown={event => keyDown(ReactEvent.Keyboard.key(event))}/>
