@@ -8,8 +8,15 @@ function CountrySuggestion(Props) {
   var results = Props.results;
   var options = Belt_Array.map(results, (function (country) {
           return React.createElement("div", {
-                      key: "country-" + country.id
-                    }, country.label, React.createElement("input", {
+                      key: "country-" + country.id,
+                      className: "flag-option"
+                    }, React.createElement("img", {
+                          className: "flag-icon",
+                          alt: "United States",
+                          src: "http://purecatamphetamine.github.io/country-flag-icons/3x2/US.svg"
+                        }), React.createElement("span", {
+                          className: "option-field"
+                        }, country.label), React.createElement("input", {
                           key: "country-input-" + country.id,
                           type: "hidden",
                           value: country.value
