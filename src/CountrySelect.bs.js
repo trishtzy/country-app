@@ -34,11 +34,19 @@ function CountrySelect(Props) {
   var match$1 = React.useState(function () {
         return [];
       });
-  var setCountryList = match$1[1];
+  var setSearchResult = match$1[1];
   var match$2 = React.useState(function () {
         return [];
       });
   var setAllCountries = match$2[1];
+  var match$3 = React.useState(function () {
+        return "";
+      });
+  var setSelectedCountry = match$3[1];
+  var match$4 = React.useState(function () {
+        return "";
+      });
+  var setSelectedCountryLabel = match$4[1];
   var onChange = function (evt) {
     evt.preventDefault();
     var value = evt.target.value;
@@ -58,7 +66,7 @@ function CountrySelect(Props) {
                             value: x._source.value
                           };
                   }));
-            return Curry._1(setCountryList, (function (_prev) {
+            return Curry._1(setSearchResult, (function (_prev) {
                           return clist;
                         }));
           }));
@@ -97,6 +105,14 @@ function CountrySelect(Props) {
                       value: country.value
                     }, country.label);
         }));
+  var callbackFunc = function (selectedCountry, selectedCountryLabel) {
+    Curry._1(setSelectedCountry, (function (_prev) {
+            return selectedCountry;
+          }));
+    return Curry._1(setSelectedCountryLabel, (function (_prev) {
+                  return selectedCountryLabel;
+                }));
+  };
   return React.createElement("div", {
               className: "container centered"
             }, React.createElement("form", undefined, React.createElement("div", {
@@ -106,8 +122,8 @@ function CountrySelect(Props) {
                         }, React.createElement("select", {
                               id: "exampleRecipientInput"
                             }, React.createElement("option", {
-                                  value: "Option 1"
-                                }, "United States"), allCountriesOptions))), React.createElement("div", {
+                                  value: match$3[0]
+                                }, match$4[0]), allCountriesOptions))), React.createElement("div", {
                       className: "row"
                     }, React.createElement("div", {
                           className: "input-icons autocomplete one-third column"
@@ -134,7 +150,8 @@ function CountrySelect(Props) {
                                 }),
                               onChange: onChange
                             }), React.createElement(CountrySuggestion.make, {
-                              results: match$1[0]
+                              results: match$1[0],
+                              clickedValue: callbackFunc
                             })))));
 }
 

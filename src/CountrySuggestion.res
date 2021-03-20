@@ -1,7 +1,14 @@
 @react.component
-let make = (~results) => {
+let make = (~results, ~clickedValue) => {
+
+  let handleClick = selectedCountry => {
+    let value = selectedCountry["value"]
+    let label = selectedCountry["label"]
+    clickedValue(value, label)
+    Js.log(value)
+  }
   let options = Belt.Array.map(results, country => {
-    <div className="flag-option" key=`country-${country["id"]}`>
+    <div onClick={_ => handleClick(country)} className="flag-option" key=`country-${country["id"]}`>
       <img className="flag-icon" alt="United States" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/US.svg"/>
       <span className="option-field">{React.string(country["label"])}</span>
       <input key=`country-input-${country["id"]}` type_="hidden" value={country["value"]}/>

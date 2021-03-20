@@ -42,8 +42,11 @@ type document // abstract type for a document object
 @react.component
 let make = () => {
   let (query, setQuery) = React.useState(_ => "");
-  let (countryList, setCountryList) = React.useState(_ => []);
+  let (searchResult, setSearchResult) = React.useState(_ => []);
   let (allCountries, setAllCountries) = React.useState(_ => []);
+  let (selectedCountry, setSelectedCountry) = React.useState(_ => "");
+  let (selectedCountryLabel, setSelectedCountryLabel) = React.useState(_ => "");
+
 
   let onChange = evt => {
     ReactEvent.Form.preventDefault(evt)
@@ -56,7 +59,7 @@ let make = () => {
         let clist = Belt.Array.map(response.hits.hits, x => {
           {"id": Belt.Int.toString(x._source["ID"]), "label": x._source["label"], "value": x._source["value"]}
         })
-        setCountryList(_prev => clist)
+        setSearchResult(_prev => clist)
       }
       // Js.log(response.hits.hits)
     })
@@ -93,12 +96,18 @@ let make = () => {
   let allCountriesOptions = Belt.Array.map(allCountries, country => {
       <option key={country["id"]} value={country["value"]}>{React.string(country["label"])}</option>
     })
+
+  let callbackFunc = (selectedCountry, selectedCountryLabel) => {
+    setSelectedCountry(_prev => selectedCountry)
+    setSelectedCountryLabel(_prev => selectedCountryLabel)
+  }
+
   <div className="container centered">
     <form>
       <div className="row">
         <div className="one-third column title-centered">
           <select id="exampleRecipientInput">
-            <option value="Option 1">{React.string("United States")}</option>
+            <option value=selectedCountry>{React.string(selectedCountryLabel)}</option>
             {React.array(allCountriesOptions)}
           </select>
         </div>
@@ -114,7 +123,7 @@ let make = () => {
             onChange
             value=query
             onKeyDown={event => keyDown(ReactEvent.Keyboard.key(event))}/>
-          <CountrySuggestion results=countryList/>
+          <CountrySuggestion results=searchResult clickedValue={callbackFunc}/>
         </div>
       </div>
     </form>
