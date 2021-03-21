@@ -8,7 +8,7 @@
     "start": "bsb -make-world -w",
     "watch": "webpack --watch",
     "webpack:production": "NODE_ENV=production webpack",
-    "serve": "webpack serve"
+    "serve": "webpack serve --host=0.0.0.0"
   },
   "keywords": [
     "rescript"
@@ -22,8 +22,7 @@
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "style-loader": "^2.0.0",
-    "svg-url-loader": "^7.1.1",
-    "webpack-merge": "^5.7.3"
+    "svg-url-loader": "^7.1.1"
   },
   "dependencies": {
     "@rescript/react": "^0.10.1",
