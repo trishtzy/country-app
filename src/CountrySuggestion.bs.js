@@ -4,6 +4,9 @@
 var Curry = require("bs-platform/lib/js/curry.js");
 var React = require("react");
 var Belt_Array = require("bs-platform/lib/js/belt_Array.js");
+var USSvg = require("../assets/US.svg");
+
+var flagSVG = USSvg;
 
 function CountrySuggestion(Props) {
   var results = Props.results;
@@ -22,7 +25,7 @@ function CountrySuggestion(Props) {
                     }, React.createElement("img", {
                           className: "flag-icon",
                           alt: "United States",
-                          src: "http://purecatamphetamine.github.io/country-flag-icons/3x2/US.svg"
+                          src: flagSVG
                         }), React.createElement("span", {
                           className: "option-field"
                         }, country.label), React.createElement("input", {
@@ -39,5 +42,6 @@ function CountrySuggestion(Props) {
 
 var make = CountrySuggestion;
 
+exports.flagSVG = flagSVG;
 exports.make = make;
-/* react Not a pure module */
+/* flagSVG Not a pure module */

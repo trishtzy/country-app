@@ -1,3 +1,5 @@
+@module external flagSVG: string = "../assets/US.svg";
+
 @react.component
 let make = (~results, ~clickedValue) => {
 
@@ -9,7 +11,7 @@ let make = (~results, ~clickedValue) => {
   }
   let options = Belt.Array.map(results, country => {
     <div onClick={_ => handleClick(country)} className="flag-option" key=`country-${country["id"]}`>
-      <img className="flag-icon" alt="United States" src="http://purecatamphetamine.github.io/country-flag-icons/3x2/US.svg"/>
+      <img className="flag-icon" alt="United States" src={flagSVG}/>
       <span className="option-field">{React.string(country["label"])}</span>
       <input key=`country-input-${country["id"]}` type_="hidden" value={country["value"]}/>
     </div>
