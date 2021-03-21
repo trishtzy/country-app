@@ -41,17 +41,14 @@ type document // abstract type for a document object
 
 @react.component
 let make = () => {
-  let (query, setQuery) = React.useState(_ => "");
+  let (query, setQuery) = React.useState(() => "");
   let (searchResult, setSearchResult) = React.useState(_ => []);
-  let (allCountries, setAllCountries) = React.useState(_ => []);
-  let (selectedCountry, setSelectedCountry) = React.useState(_ => "");
-  let (selectedCountryLabel, setSelectedCountryLabel) = React.useState(_ => "");
-
-
+  let (selectedCountryLabel, setSelectedCountryLabel) = React.useState(_ => "Select a Country");
   let onChange = evt => {
     ReactEvent.Form.preventDefault(evt)
     let value = ReactEvent.Form.target(evt)["value"]
-    setQuery(_prev => value);
+    setQuery(value)
+    // Js.log(`query: ${query} value: ${value}`)
     let esReq = makeXMLHttpRequest();
     esReq->addEventListener("load", () => {
       let response = esReq->response->parseResponse
@@ -60,6 +57,8 @@ let make = () => {
           {"id": Belt.Int.toString(x._source["ID"]), "label": x._source["label"], "value": x._source["value"]}
         })
         setSearchResult(_prev => clist)
+      } else {
+        setSearchResult(_prev => [])
       }
       // Js.log(response.hits.hits)
     })
@@ -68,7 +67,7 @@ let make = () => {
     })
     esReq->open_("POST", "http://localhost:9200/country/_search");
     esReq->setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    esReq->send(Js.Json.stringifyAny(esReqBody(query)));
+    esReq->send(Js.Json.stringifyAny(esReqBody(value)));
   }
   // Js.log(esReqBody(query))
   let keyDown = key => {
@@ -79,26 +78,7 @@ let make = () => {
     }
   }
 
-  let countryReq = makeXMLHttpRequest();
-  countryReq->addEventListener("load", () => {
-    let response = countryReq->response->parseCountryResponse
-    let allCountries = Belt.Array.map(response, x => {
-          {"id": Belt.Int.toString(x["ID"]), "label": x["label"], "value": x["value"]}
-        })
-    setAllCountries(_prev => allCountries)
-  })
-  countryReq->addEventListener("error", () => {
-    Js.log("Error logging here countryReq")
-  })
-  countryReq->open_("GET", "http://localhost:8080/countries")
-  countryReq->sendReq
-
-  let allCountriesOptions = Belt.Array.map(allCountries, country => {
-      <option key={country["id"]} value={country["value"]}>{React.string(country["label"])}</option>
-    })
-
-  let callbackFunc = (selectedCountry, selectedCountryLabel) => {
-    setSelectedCountry(_prev => selectedCountry)
+  let countryFromChild = (_, selectedCountryLabel) => {
     setSelectedCountryLabel(_prev => selectedCountryLabel)
   }
 
@@ -106,10 +86,10 @@ let make = () => {
     <form>
       <div className="row">
         <div className="one-third column title-centered">
-          <select id="exampleRecipientInput">
-            <option value=selectedCountry>{React.string(selectedCountryLabel)}</option>
-            {React.array(allCountriesOptions)}
-          </select>
+        <button>
+          {React.string(selectedCountryLabel)}
+          <i className="bi-caret-down-fill caret-style"></i>
+        </button>
         </div>
       </div>
       <div className="row">
@@ -123,7 +103,7 @@ let make = () => {
             onChange
             value=query
             onKeyDown={event => keyDown(ReactEvent.Keyboard.key(event))}/>
-          <CountrySuggestion results=searchResult clickedValue={callbackFunc}/>
+          <CountrySuggestion results=searchResult clickedValue={countryFromChild}/>
         </div>
       </div>
     </form>

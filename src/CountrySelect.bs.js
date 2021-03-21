@@ -30,34 +30,25 @@ function CountrySelect(Props) {
         return "";
       });
   var setQuery = match[1];
-  var query = match[0];
   var match$1 = React.useState(function () {
         return [];
       });
   var setSearchResult = match$1[1];
   var match$2 = React.useState(function () {
-        return [];
+        return "Select a Country";
       });
-  var setAllCountries = match$2[1];
-  var match$3 = React.useState(function () {
-        return "";
-      });
-  var setSelectedCountry = match$3[1];
-  var match$4 = React.useState(function () {
-        return "";
-      });
-  var setSelectedCountryLabel = match$4[1];
+  var setSelectedCountryLabel = match$2[1];
   var onChange = function (evt) {
     evt.preventDefault();
     var value = evt.target.value;
-    Curry._1(setQuery, (function (_prev) {
-            return value;
-          }));
+    Curry._1(setQuery, value);
     var esReq = new XMLHttpRequest();
     esReq.addEventListener("load", (function (param) {
             var response = JSON.parse(esReq.response);
             if (response.hits.hits.length === 0) {
-              return ;
+              return Curry._1(setSearchResult, (function (_prev) {
+                            return [];
+                          }));
             }
             var clist = Belt_Array.map(response.hits.hits, (function (x) {
                     return {
@@ -76,39 +67,10 @@ function CountrySelect(Props) {
           }));
     esReq.open("POST", "http://localhost:9200/country/_search");
     esReq.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    esReq.send(JSON.stringify(esReqBody(query)));
+    esReq.send(JSON.stringify(esReqBody(value)));
     
   };
-  var countryReq = new XMLHttpRequest();
-  countryReq.addEventListener("load", (function (param) {
-          var response = JSON.parse(countryReq.response);
-          var allCountries = Belt_Array.map(response, (function (x) {
-                  return {
-                          id: String(x.ID),
-                          label: x.label,
-                          value: x.value
-                        };
-                }));
-          return Curry._1(setAllCountries, (function (_prev) {
-                        return allCountries;
-                      }));
-        }));
-  countryReq.addEventListener("error", (function (param) {
-          console.log("Error logging here countryReq");
-          
-        }));
-  countryReq.open("GET", "http://localhost:8080/countries");
-  countryReq.send();
-  var allCountriesOptions = Belt_Array.map(match$2[0], (function (country) {
-          return React.createElement("option", {
-                      key: country.id,
-                      value: country.value
-                    }, country.label);
-        }));
-  var callbackFunc = function (selectedCountry, selectedCountryLabel) {
-    Curry._1(setSelectedCountry, (function (_prev) {
-            return selectedCountry;
-          }));
+  var countryFromChild = function (param, selectedCountryLabel) {
     return Curry._1(setSelectedCountryLabel, (function (_prev) {
                   return selectedCountryLabel;
                 }));
@@ -119,11 +81,9 @@ function CountrySelect(Props) {
                       className: "row"
                     }, React.createElement("div", {
                           className: "one-third column title-centered"
-                        }, React.createElement("select", {
-                              id: "exampleRecipientInput"
-                            }, React.createElement("option", {
-                                  value: match$3[0]
-                                }, match$4[0]), allCountriesOptions))), React.createElement("div", {
+                        }, React.createElement("button", undefined, match$2[0], React.createElement("i", {
+                                  className: "bi-caret-down-fill caret-style"
+                                })))), React.createElement("div", {
                       className: "row"
                     }, React.createElement("div", {
                           className: "input-icons autocomplete one-third column"
@@ -134,7 +94,7 @@ function CountrySelect(Props) {
                               id: "myInput",
                               placeholder: "Search",
                               type: "text",
-                              value: query,
+                              value: match[0],
                               onKeyDown: (function ($$event) {
                                   var key = $$event.key;
                                   switch (key) {
@@ -151,7 +111,7 @@ function CountrySelect(Props) {
                               onChange: onChange
                             }), React.createElement(CountrySuggestion.make, {
                               results: match$1[0],
-                              clickedValue: callbackFunc
+                              clickedValue: countryFromChild
                             })))));
 }
 

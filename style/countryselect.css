@@ -3,8 +3,10 @@
 }
 
 .icon {
-  padding: 10px;
+  padding-left: 9px;
+  padding-top: 8px;
   min-width: 40px;
+  vertical-align: middle;
 }
 
 .flag-option{
@@ -14,6 +16,11 @@
 .flag-icon {
   width: 20px;
   vertical-align: middle;
+}
+
+.caret-style {
+  margin-left: 20px;
+  margin-right: -20px;
 }
 
 .option-field {
@@ -39,7 +46,7 @@ select.minimal {
 
 .input-field {
   padding: 10px;
-  text-align: center;
+  text-align: left;
 }
 
 .title-centered {
@@ -73,6 +80,8 @@ input[type=text] {
 }
 
 .autocomplete-items {
+  max-height: 250px;
+  overflow: auto;
   position: absolute;
   border: 1px solid #d4d4d4;
   border-bottom: none;
