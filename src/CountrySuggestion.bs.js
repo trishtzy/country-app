@@ -18,9 +18,7 @@ function CountrySuggestion(Props) {
                       onClick: (function (param) {
                           var value = country.value;
                           var label = country.label;
-                          Curry._2(clickedValue, value, label);
-                          console.log(value);
-                          
+                          return Curry._2(clickedValue, value, label);
                         })
                     }, React.createElement("img", {
                           className: "flag-icon",

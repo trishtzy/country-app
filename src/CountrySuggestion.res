@@ -7,7 +7,6 @@ let make = (~results, ~clickedValue) => {
     let value = selectedCountry["value"]
     let label = selectedCountry["label"]
     clickedValue(value, label)
-    Js.log(value)
   }
   let options = Belt.Array.map(results, country => {
     <div onClick={_ => handleClick(country)} className="flag-option" key=`country-${country["id"]}`>
