@@ -9,6 +9,7 @@ var CountrySuggestion = require("./CountrySuggestion.bs.js");
 var dataURL = "https://gist.githubusercontent.com/rusty-key/659db3f4566df459bd59c8a53dc9f71f/raw/4127f9550ef063121c564025f6d27dceeb279623/counties.json";
 
 function CountrySelect(Props) {
+  var index = React.useRef(-1);
   var match = React.useState(function () {
         return "";
       });
@@ -44,22 +45,22 @@ function CountrySelect(Props) {
         }));
   req.addEventListener("error", (function (param) {
           console.log("Error with req from github");
-          
+
         }));
   var onChange = function (evt) {
     evt.preventDefault();
     var value = evt.target.value;
     Curry._1(setQuery, value);
     var searchList = Belt_Array.keep(allCountries, (function (c) {
-            return c.label.includes(value);
+            return c.label.toLowerCase().includes(value.toLowerCase());
           }));
     return Curry._1(setSearchResult, (function (param) {
                   return searchList;
                 }));
   };
-  var countryFromChild = function (param, selectedCountryLabel) {
+  var countryFromChild = function (param, label) {
     return Curry._1(setSelectedCountryLabel, (function (_prev) {
-                  return selectedCountryLabel;
+                  return label;
                 }));
   };
   return React.createElement("div", {
@@ -84,13 +85,45 @@ function CountrySelect(Props) {
                               value: match[0],
                               onKeyDown: (function ($$event) {
                                   var key = $$event.key;
+                                  var autoCompleteBlock = document.getElementById("autocomplete-list");
+                                  var autoCompleteChildren = autoCompleteBlock.getElementsByTagName("div");
+                                  console.log("index: " + String(index.current));
+                                  console.log(key);
+                                  if (index.current > -1) {
+                                    var countryChild = Belt_Array.get(autoCompleteChildren, index.current);
+                                    countryChild.classList.remove("autocomplete-active");
+                                  }
                                   switch (key) {
                                     case "ArrowDown" :
-                                        console.log("2");
+                                        if (Belt_Array.get(autoCompleteChildren, index.current + 1 | 0) !== undefined) {
+                                          index.current = index.current + 1 | 0;
+                                        }
+                                        console.log("index: " + String(index.current));
+                                        var countryChild$1 = Belt_Array.get(autoCompleteChildren, index.current);
+                                        countryChild$1.classList.add("autocomplete-active");
                                         return ;
                                     case "ArrowUp" :
-                                        console.log("1");
+                                        if (index.current < 0) {
+                                          index.current = 0;
+                                        } else {
+                                          index.current = index.current - 1 | 0;
+                                        }
+                                        console.log("index: " + String(index.current));
+                                        var countryChild$2 = Belt_Array.get(autoCompleteChildren, index.current);
+                                        countryChild$2.classList.add("autocomplete-active");
                                         return ;
+                                    case "Enter" :
+                                        $$event.preventDefault();
+                                        if (index.current <= -1) {
+                                          return ;
+                                        }
+                                        var countryChild$3 = Belt_Array.get(autoCompleteChildren, index.current);
+                                        var nodes = countryChild$3.childNodes;
+                                        var node1 = Belt_Array.get(nodes, 1);
+                                        var text = node1.firstChild.nodeValue;
+                                        return Curry._1(setSelectedCountryLabel, (function (param) {
+                                                      return text;
+                                                    }));
                                     default:
                                       return ;
                                   }

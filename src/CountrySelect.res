@@ -17,9 +17,17 @@ external parseCountryResponse: response => countries = "parse"
 type document // abstract type for a document object
 @bs.send external getElementById: (document, string) => Dom.element = "getElementById"
 @bs.val external doc: document = "document"
+@bs.send external getElementsByTagName: (Dom.element, string) => array<Dom.element> = "getElementsByTagName"
+@bs.send external classList: option<Dom.element> => Dom.domTokenList = "classList"
+@bs.send external add: (Dom.domTokenList, string) => unit = "add"
+@bs.send external remove: (Dom.domTokenList, string) => unit = "remove"
+@bs.send external childNodes: option<Dom.element> => array<Dom.element> = "childNodes"
+@bs.send external firstChild: option<Dom.element> => Dom.element = "firstChild"
+@bs.send external nodeValue: Dom.element => string = "nodeValue"
 
 @react.component
 let make = () => {
+  let (index) = React.useRef(-1);
   let (query, setQuery) = React.useState(() => "");
   let (searchResult, setSearchResult) = React.useState(_ => []);
   let (allCountries, setAllCountries) = React.useState(_ => []);
@@ -43,20 +51,55 @@ let make = () => {
     ReactEvent.Form.preventDefault(evt)
     let value = ReactEvent.Form.target(evt)["value"]
     setQuery(value)
-    let searchList = Belt.Array.keep(allCountries, c => Js.String2.includes(c["label"], value))
+    let searchList = Belt.Array.keep(allCountries, c => Js.String2.includes(Js.String2.toLowerCase(c["label"]), Js.String2.toLowerCase(value)))
     setSearchResult(_ => searchList)
   }
   // Js.log(esReqBody(query))
-  let keyDown = key => {
-    switch (key) {
-    | "ArrowUp" => Js.log("1")
-    | "ArrowDown" => Js.log("2")
-    | _ => ()
-    }
+
+  let countryFromChild = (_, label) => {
+    setSelectedCountryLabel(_prev => label)
   }
 
-  let countryFromChild = (_, selectedCountryLabel) => {
-    setSelectedCountryLabel(_prev => selectedCountryLabel)
+  let keyDown = (evt, key) => {
+    let autoCompleteBlock = doc->getElementById("autocomplete-list")
+    let autoCompleteChildren = autoCompleteBlock->getElementsByTagName("div")
+    Js.log(`index: ${Belt.Int.toString(index.current)}`)
+    Js.log(key)
+    if (index.current > -1) {
+      let countryChild = Belt.Array.get(autoCompleteChildren, index.current)
+      remove(countryChild->classList, "autocomplete-active")
+    }
+    switch (key) {
+    | "ArrowUp" => {
+      if (index.current < 0) {
+        index.current = 0
+      } else {
+        index.current = index.current - 1
+      }
+      Js.log(`index: ${Belt.Int.toString(index.current)}`)
+      let countryChild = Belt.Array.get(autoCompleteChildren, index.current)
+      add(countryChild->classList, "autocomplete-active")
+    }
+    | "ArrowDown" => {
+      if Belt.Array.get(autoCompleteChildren, index.current + 1) != None {
+        index.current = index.current + 1
+      }
+      Js.log(`index: ${Belt.Int.toString(index.current)}`)
+      let countryChild = Belt.Array.get(autoCompleteChildren, index.current)
+      add(countryChild->classList, "autocomplete-active")
+    }
+    | "Enter" => {
+      ReactEvent.Keyboard.preventDefault(evt)
+      if (index.current > -1) {
+        let countryChild = Belt.Array.get(autoCompleteChildren, index.current)
+        let nodes = countryChild->childNodes
+        let node1 = nodes[1]
+        let text = node1->firstChild->nodeValue
+        setSelectedCountryLabel(_ => text)
+      }
+    }
+    | _ => ()
+    }
   }
 
   <div className="container centered">
@@ -79,7 +122,7 @@ let make = () => {
             placeholder="Search"
             onChange
             value=query
-            onKeyDown={event => keyDown(ReactEvent.Keyboard.key(event))}/>
+            onKeyDown={event => keyDown(event, ReactEvent.Keyboard.key(event))}/>
           <CountrySuggestion results=searchResult clickedValue={countryFromChild}/>
         </div>
       </div>
