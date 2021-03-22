@@ -65,7 +65,7 @@ let make = () => {
     esReq->addEventListener("error", () => {
       Js.log("Error logging here esreq")
     })
-    esReq->open_("POST", "http://localhost:9200/country/_search");
+    esReq->open_("POST", "http://172.31.23.177:9200/country/_search");
     esReq->setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     esReq->send(Js.Json.stringifyAny(esReqBody(value)));
   }
