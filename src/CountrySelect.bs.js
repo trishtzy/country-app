@@ -6,24 +6,7 @@ var React = require("react");
 var Belt_Array = require("bs-platform/lib/js/belt_Array.js");
 var CountrySuggestion = require("./CountrySuggestion.bs.js");
 
-function esReqBody(q) {
-  return {
-          query: {
-            multi_match: {
-              query: q,
-              type: "bool_prefix",
-              fields: [
-                "label",
-                "value",
-                "label._2gram",
-                "value._2gram",
-                "label._3gram",
-                "value._3gram"
-              ]
-            }
-          }
-        };
-}
+var dataURL = "https://gist.githubusercontent.com/rusty-key/659db3f4566df459bd59c8a53dc9f71f/raw/4127f9550ef063121c564025f6d27dceeb279623/counties.json";
 
 function CountrySelect(Props) {
   var match = React.useState(function () {
@@ -35,40 +18,44 @@ function CountrySelect(Props) {
       });
   var setSearchResult = match$1[1];
   var match$2 = React.useState(function () {
+        return [];
+      });
+  var setAllCountries = match$2[1];
+  var allCountries = match$2[0];
+  var match$3 = React.useState(function () {
         return "Select a Country";
       });
-  var setSelectedCountryLabel = match$2[1];
+  var setSelectedCountryLabel = match$3[1];
+  var req = new XMLHttpRequest();
+  req.open("GET", dataURL);
+  req.send();
+  req.addEventListener("load", (function (param) {
+          var response = JSON.parse(req.response);
+          var result = Belt_Array.mapWithIndex(response, (function (i, x) {
+                  return {
+                          id: String(i),
+                          label: x.label,
+                          value: x.value
+                        };
+                }));
+          return Curry._1(setAllCountries, (function (param) {
+                        return result;
+                      }));
+        }));
+  req.addEventListener("error", (function (param) {
+          console.log("Error with req from github");
+          
+        }));
   var onChange = function (evt) {
     evt.preventDefault();
     var value = evt.target.value;
     Curry._1(setQuery, value);
-    var esReq = new XMLHttpRequest();
-    esReq.addEventListener("load", (function (param) {
-            var response = JSON.parse(esReq.response);
-            if (response.hits.hits.length === 0) {
-              return Curry._1(setSearchResult, (function (_prev) {
-                            return [];
-                          }));
-            }
-            var clist = Belt_Array.map(response.hits.hits, (function (x) {
-                    return {
-                            id: String(x._source.ID),
-                            label: x._source.label,
-                            value: x._source.value
-                          };
-                  }));
-            return Curry._1(setSearchResult, (function (_prev) {
-                          return clist;
-                        }));
+    var searchList = Belt_Array.keep(allCountries, (function (c) {
+            return c.label.includes(value);
           }));
-    esReq.addEventListener("error", (function (param) {
-            console.log("Error logging here esreq");
-            
-          }));
-    esReq.open("POST", "http://172.31.23.177:9200/country/_search");
-    esReq.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    esReq.send(JSON.stringify(esReqBody(value)));
-    
+    return Curry._1(setSearchResult, (function (param) {
+                  return searchList;
+                }));
   };
   var countryFromChild = function (param, selectedCountryLabel) {
     return Curry._1(setSelectedCountryLabel, (function (_prev) {
@@ -81,7 +68,7 @@ function CountrySelect(Props) {
                       className: "row"
                     }, React.createElement("div", {
                           className: "one-third column title-centered"
-                        }, React.createElement("button", undefined, match$2[0], React.createElement("i", {
+                        }, React.createElement("button", undefined, match$3[0], React.createElement("i", {
                                   className: "bi-caret-down-fill caret-style"
                                 })))), React.createElement("div", {
                       className: "row"
@@ -117,6 +104,6 @@ function CountrySelect(Props) {
 
 var make = CountrySelect;
 
-exports.esReqBody = esReqBody;
+exports.dataURL = dataURL;
 exports.make = make;
 /* react Not a pure module */

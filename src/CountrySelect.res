@@ -1,37 +1,16 @@
-let esReqBody = (q) => = {
-  "query": {
-    "multi_match": {
-      "query": q,
-      "type": "bool_prefix",
-      "fields": [
-        "label",
-        "value",
-        "label._2gram",
-        "value._2gram",
-        "label._3gram",
-        "value._3gram"
-      ]
-    }
-  }
-}
+let dataURL = "https://gist.githubusercontent.com/rusty-key/659db3f4566df459bd59c8a53dc9f71f/raw/4127f9550ef063121c564025f6d27dceeb279623/counties.json"
 type request
 type response
-type country = {"ID": int, "label": string, "value": string}
+type country = {"ID": string, "label": string, "value": string}
 type countries = array<country>
-type esHits = {_index: string, _type: string, _id: string, _score: float, _source: country}
-type esInnerResponse = { hits: array<esHits> }
-type esResponse = { hits: esInnerResponse }
 @bs.new external makeXMLHttpRequest: unit => request = "XMLHttpRequest"
 @bs.send external addEventListener: (request, string, unit => unit) => unit = "addEventListener"
 @bs.get external response: request => response = "response"
 @bs.send external open_: (request, string, string) => unit = "open"
-@bs.send external send: (request, option<string>) => unit = "send"
+@bs.send external send: request => unit = "send"
 @bs.send external sendReq: request => unit = "send"
 @bs.send external abort: request => unit = "abort"
-@bs.send external setRequestHeader: (request, string, string) => unit = "setRequestHeader"
 // =========
-@bs.scope("JSON") @bs.val
-external parseResponse: response => esResponse = "parse"
 @bs.scope("JSON") @bs.val
 external parseCountryResponse: response => countries = "parse"
 
@@ -43,31 +22,29 @@ type document // abstract type for a document object
 let make = () => {
   let (query, setQuery) = React.useState(() => "");
   let (searchResult, setSearchResult) = React.useState(_ => []);
+  let (allCountries, setAllCountries) = React.useState(_ => []);
   let (selectedCountryLabel, setSelectedCountryLabel) = React.useState(_ => "Select a Country");
+
+  let req = makeXMLHttpRequest();
+  req->open_("GET", dataURL);
+  req->send
+  req->addEventListener("load", () => {
+    let response = req->response->parseCountryResponse
+    let result = Belt.Array.mapWithIndex(response, (i, x) => {
+      {"id": Belt.Int.toString(i), "label": x["label"], "value": x["value"]}
+    })
+    setAllCountries(_ => result)
+  })
+  req->addEventListener("error", () => {
+    Js.log("Error with req from github")
+  })
+
   let onChange = evt => {
     ReactEvent.Form.preventDefault(evt)
     let value = ReactEvent.Form.target(evt)["value"]
     setQuery(value)
-    // Js.log(`query: ${query} value: ${value}`)
-    let esReq = makeXMLHttpRequest();
-    esReq->addEventListener("load", () => {
-      let response = esReq->response->parseResponse
-      if Belt_Array.length(response.hits.hits) > 0 {
-        let clist = Belt.Array.map(response.hits.hits, x => {
-          {"id": Belt.Int.toString(x._source["ID"]), "label": x._source["label"], "value": x._source["value"]}
-        })
-        setSearchResult(_prev => clist)
-      } else {
-        setSearchResult(_prev => [])
-      }
-      // Js.log(response.hits.hits)
-    })
-    esReq->addEventListener("error", () => {
-      Js.log("Error logging here esreq")
-    })
-    esReq->open_("POST", "http://172.31.23.177:9200/country/_search");
-    esReq->setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    esReq->send(Js.Json.stringifyAny(esReqBody(value)));
+    let searchList = Belt.Array.keep(allCountries, c => Js.String2.includes(c["label"], value))
+    setSearchResult(_ => searchList)
   }
   // Js.log(esReqBody(query))
   let keyDown = key => {
