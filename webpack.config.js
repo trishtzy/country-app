@@ -24,7 +24,8 @@ module.exports = {
     contentBase: outputDir,
     port: process.env.PORT || 8000,
     historyApiFallback: true,
-    hot: true
+    hot: true,
+    disableHostCheck: true
   },
   module: {
     rules: [
